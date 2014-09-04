@@ -1,0 +1,2 @@
+useDynLib( subrank, InterCopulation, InterTir )
+export( corc, corc0, desscop, desscoptous, simnul, simany, estimdep, predictdep )
