@@ -1,4 +1,5 @@
 #include "copc.h"
+#include <stdio.h>
 
 
 /*
@@ -88,6 +89,19 @@ void Combinaison( int *ssech, int numero, int n, int p )
   }
 }
 
+/* http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle */
+void Permutation( int *permute, rk_state *rkfil, int n )
+{
+  int i, j, stockage ;
+  for( i=n-1;i>0;i-- )
+  {
+    j = rk_interval(i, rkfil);
+    stockage=permute[i];
+    permute[i]=permute[j];
+    permute[j]=stockage;
+  }
+}
+
 
 /*
 tirage d'un ss-echantillon
@@ -128,8 +142,9 @@ Pour le developpement en base imaxssech, multiplier tout le vecteur des
 positions par imaxssech revient evidemment a decaler tous les chiffres vers la
 gauche
 */
-int Ajoutscopule( double *rechant, int *issech, int *iajoutscop,
-  const int imaxssech, const int imaxechant, const int imaxdim )
+int Ajoutscopule( double *rechant, rk_state *rkfil, int *issech, int *iajoutscop,
+  const int imaxssech, const int imaxechant, const int imaxdim,
+  const int imixties )
 {
   int indssech, inddim;
   double rechtemp[imaxdim][imaxssech];
@@ -147,16 +162,35 @@ int Ajoutscopule( double *rechant, int *issech, int *iajoutscop,
     int permutation[imaxssech];
     Tri(&rechtemp[inddim][0],permutation,imaxssech);
     {
-      for( indssech=1; indssech<imaxssech ; indssech++ )
+      if ( imixties==0 )
       {
-        if( rechtemp[inddim][indssech]==rechtemp[inddim][indssech-1] )
-        { return 1; }
+        for( indssech=1; indssech<imaxssech ; indssech++ )
+        {
+          if( rechtemp[inddim][indssech]==rechtemp[inddim][indssech-1] )
+          { return 1; }
+        }
       }
-    }
-    for( indssech=0; indssech<imaxssech; indssech++ )
-    {
-      iajoutscop[permutation[indssech]]=
-        iajoutscop[permutation[indssech]]*imaxssech+indssech;
+      else
+      {
+        int egaliteavant=0, egalite, debutmix, finmix ;
+        for( indssech=1; indssech<imaxssech ; indssech++ )
+        {
+          egalite=(int)( rechtemp[inddim][indssech]==rechtemp[inddim][indssech-1] );
+          if ( egalite==1 && egaliteavant==0 )
+          { debutmix=indssech; }
+          if ( (egalite==0 || indssech==imaxssech-1 ) && egaliteavant==1 )
+          {
+            finmix=indssech;
+            Permutation( &permutation[debutmix-1], rkfil, finmix-debutmix+2);
+          }
+          egaliteavant=egalite;
+        }
+      }
+      for( indssech=0; indssech<imaxssech; indssech++ )
+      {
+        iajoutscop[permutation[indssech]]=
+          iajoutscop[permutation[indssech]]*imaxssech+indssech;
+      }
     }
   }
   return 0;
@@ -184,6 +218,7 @@ qu'il y ait peu de collisions.
 void Copulation(
   double *rechant,
   int *imaxechant, int *imaxssech, int *imaxdim,
+  int *imixties,
   int *iu, int *imaxtir,
   int *icop )
 {
@@ -201,18 +236,18 @@ void Copulation(
     if ( imaxcop>CopMaxRed )
     { 
       CopulationStoAto
-        (rechant,*imaxechant,*imaxssech,*imaxdim,*iu,*imaxtir,icop);
+        (rechant,*imaxechant,*imaxssech,*imaxdim,*imixties,*iu,*imaxtir,icop);
     }
     else
     { 
       CopulationStoRed
-        (rechant,*imaxechant,*imaxssech,*imaxdim,*iu,*imaxtir,icop);
+        (rechant,*imaxechant,*imaxssech,*imaxdim,*imixties,*iu,*imaxtir,icop);
     }
     icop[imaxcop+1]=*imaxtir;
   }
   else 
   {
-    CopulationDet(rechant,*imaxechant,*imaxssech,*imaxdim,icop);
+    CopulationDet(rechant,*imaxechant,*imaxssech,*imaxdim,*imixties,icop);
     icop[imaxcop+1]=NumComb(*imaxechant,*imaxssech);
   }
 }
@@ -225,6 +260,7 @@ si nombre de sous-echantillons trop grand
 */
 void CopulationStoAto( double *rechant,
   const int imaxechant, const int imaxssech, const int imaxdim,
+  const int imixties,
   int iu, int imaxtir,
   int *icop )
 {
@@ -239,8 +275,8 @@ void CopulationStoAto( double *rechant,
     for( indtir=0; indtir<imaxtir; indtir++ )
     {
       TirSech( issech, &rkfil, imaxechant, imaxssech );
-      if( Ajoutscopule(rechant, issech, iajoutscop, imaxssech,
-        imaxechant, imaxdim) == 0 )
+      if( Ajoutscopule(rechant, &rkfil, issech, iajoutscop, imaxssech,
+        imaxechant, imaxdim,imixties) == 0 )
       {
         int indpoint ;
         for( indpoint=0 ; indpoint<imaxssech ; indpoint++ )
@@ -263,6 +299,7 @@ si nombre de sous-echantillons trop grand
 */
 void CopulationStoRed( double *rechant,
   const int imaxechant, const int imaxssech, const int imaxdim,
+  const int imixties,
   int iu, int imaxtir,
   int *icop )
 {
@@ -285,8 +322,8 @@ void CopulationStoRed( double *rechant,
    {
       int indssech, issech[imaxssech], iajoutscop[imaxssech] ;
       TirSech( issech, &rkfil, imaxechant, imaxssech );
-      if (Ajoutscopule(rechant, issech, iajoutscop,
-        imaxssech, imaxechant, imaxdim)==0)
+      if (Ajoutscopule(rechant, &rkfil, issech, iajoutscop,
+        imaxssech, imaxechant, imaxdim,imixties)==0)
         for( indssech=0; indssech<imaxssech; indssech++ )
           {icoppart[ iajoutscop[indssech] ] ++ ;}
       else { itie++; }
@@ -310,6 +347,7 @@ avec une copie de la copule par thread
 */
 void CopulationDet(double *rechant,
   const int imaxechant, const int imaxssech, const int imaxdim,
+  const int imixties,
   int *icop)
 {
   const int imaxcop=floor(.5+pow(imaxssech,imaxdim)) ;
@@ -318,6 +356,8 @@ void CopulationDet(double *rechant,
   /* enumeration des sous-echantillons */
   #pragma omp parallel reduction (+:itie)
   {
+    rk_state rkfil ;
+    rk_randomseed(&rkfil);
     int *icoppart ;
     icoppart=(int *)malloc (imaxcop * sizeof (int));
     {
@@ -331,8 +371,8 @@ void CopulationDet(double *rechant,
     {
       int indssech, issech[imaxssech], iajoutscop[imaxssech] ;
       Combinaison(issech,indcomb,imaxechant,imaxssech);
-      if (Ajoutscopule(rechant, issech, iajoutscop,
-        imaxssech, imaxechant, imaxdim)==0)
+      if (Ajoutscopule(rechant, &rkfil, issech, iajoutscop,
+        imaxssech, imaxechant, imaxdim,imixties)==0)
         for( indssech=0; indssech<imaxssech; indssech++ )
           {icoppart[ iajoutscop[indssech] ] ++ ;}
       else { itie++; }
@@ -346,4 +386,163 @@ void CopulationDet(double *rechant,
     free(icoppart);
   }
   icop[imaxcop]=itie;
+}
+
+void PredFly( int *nbcomp, int *nbexps, int *nbinc, int *nbpreds,
+  int *subsampsize, int *mixties, int *maxtirs,
+  double *completeobs, double *incompleteobs, int *completion )
+{
+  const int bloctirs=1000 ;
+  int permutinc[*nbexps**nbinc], tabnbpredsfaites[*nbinc],
+    inddim, indinc, indtirs, resteapredire=1 ;
+  for (indinc=0 ; indinc<*nbinc; indinc++ )
+  { tabnbpredsfaites[indinc]=0; }
+  for (indinc=*nbinc**nbpreds-1 ; indinc>=0; indinc-- )
+  { completion[indinc]=-1; }
+  for( inddim=0; inddim<*nbexps; inddim++ )
+  { Tri(&incompleteobs[inddim**nbinc],&permutinc[inddim**nbinc],*nbinc); }
+  for ( indtirs=0 ; indtirs<*maxtirs && resteapredire==1 ; indtirs+= bloctirs )
+  {
+    #pragma omp parallel
+    {
+      rk_state rkfil ;
+      rk_randomseed(&rkfil) ;
+      int *completemp ;
+      completemp=(int *)malloc (bloctirs**nbinc*4 * sizeof (int));
+      int nbpredsfaites, indtirs2 ;
+      nbpredsfaites=0 ;
+      #pragma omp for schedule(static)
+      for ( indtirs2=0 ; indtirs2< bloctirs; indtirs2++ )
+      {
+        nbpredsfaites+=PredFlyUnic( *nbcomp, *nbexps, *nbinc,
+          *subsampsize, *mixties,
+          &rkfil, permutinc,
+          completeobs, incompleteobs, &completemp[2*nbpredsfaites] ) ;
+      }
+      #pragma omp critical
+      {
+        int indpredfaite, indincourant ;
+        for ( indpredfaite=0; indpredfaite<nbpredsfaites ; indpredfaite++ )
+        {
+          indincourant=completemp[2*indpredfaite+1];
+          if (tabnbpredsfaites[indincourant]<*nbpreds)
+          {
+            completion[indincourant**nbpreds+tabnbpredsfaites[indincourant]]=
+              completemp[2*indpredfaite] ;
+            tabnbpredsfaites[indincourant]++; /* ??????????????????? */
+          }
+        }
+        resteapredire=0;
+        for (indincourant=0 ; indincourant<*nbinc; indincourant++ )
+        { if (tabnbpredsfaites[indincourant]<*nbpreds) {
+          resteapredire=1 ; } }
+      }
+      free(completemp);
+    }
+  }
+}
+
+
+int PredFlyUnic( int nbcomp, int nbexps, int nbinc,
+  int subsampsize, int mixties,
+  rk_state *rkfil, int *permutincloc,
+  double *completeobs, double *incompleteobs, int *completion )
+{
+  int issech[subsampsize], permutss[nbexps][subsampsize],
+    voisins[nbexps][nbinc][2],
+    inddim, nbpredsfaites=0 ;
+  double rechtemp[nbexps][subsampsize];
+  TirSech( issech, rkfil, nbcomp, subsampsize );
+  for( inddim=0; inddim<nbexps; inddim++ )
+  {
+    int indcomp ;
+    for( indcomp=0; indcomp<subsampsize; indcomp++ )
+    { 
+      rechtemp[inddim][indcomp]=
+        completeobs[inddim*nbcomp+issech[indcomp]];
+    }
+    Tri(&rechtemp[inddim][0],&permutss[inddim][0],subsampsize);
+  }
+  for( inddim=0; inddim<nbexps; inddim++ )
+  {
+    int ranginc=0, rangcomp=0,indobsqcq=0, indcompdernier,
+      numobsqcq[nbexps][nbinc+subsampsize], obsinc[nbexps][nbinc+subsampsize]  ;
+    while( rangcomp<subsampsize && ranginc<nbinc )
+    {
+      if ( rechtemp[inddim][rangcomp]<incompleteobs[inddim*nbinc+ranginc] )
+      {
+        numobsqcq[inddim][indobsqcq]=permutss[inddim][rangcomp];
+        obsinc[inddim][indobsqcq]=0;
+        rangcomp++;
+        indobsqcq++;
+      }
+      else
+      {
+        numobsqcq[inddim][indobsqcq]=permutincloc[inddim*nbinc+ranginc];
+        obsinc[inddim][indobsqcq]=1;
+        ranginc++;
+        indobsqcq++;
+      }
+    }
+    while (rangcomp<subsampsize)
+    {
+      numobsqcq[inddim][indobsqcq]=permutss[inddim][rangcomp];
+      obsinc[inddim][indobsqcq]=0;
+      rangcomp++;
+      indobsqcq++;
+    }
+    while (ranginc<nbinc)
+    {
+      numobsqcq[inddim][indobsqcq]=permutincloc[inddim*nbinc+ranginc];
+      obsinc[inddim][indobsqcq]=1;
+      ranginc++;
+      indobsqcq++;
+    }
+    indcompdernier=-1;
+    for(indobsqcq=0; indobsqcq<subsampsize+nbinc; indobsqcq++)
+    { 
+      if (obsinc[inddim][indobsqcq]==1)
+      {
+        voisins[inddim][numobsqcq[inddim][indobsqcq]][0]=indcompdernier;
+      }
+      else
+      {
+        indcompdernier=numobsqcq[inddim][indobsqcq];
+      }
+    }
+    indcompdernier=-1;
+    for(indobsqcq=subsampsize+nbinc-1; indobsqcq>=0; indobsqcq--)
+    { 
+      if (obsinc[inddim][indobsqcq]==1)
+      {
+        voisins[inddim][numobsqcq[inddim][indobsqcq]][1]=indcompdernier;
+      }
+      else
+      {
+        indcompdernier=numobsqcq[inddim][indobsqcq];
+      }
+    }
+  }
+  {
+    int indinc, apres ;
+    for ( indinc=0; indinc<nbinc; indinc++ )
+    {
+      for (apres=0 ; apres<=1; apres++)
+      {
+        for( inddim=1; inddim<nbexps; inddim++ )
+        {
+          if (voisins[0][indinc][apres]!=voisins[inddim][indinc][0] &&
+              voisins[0][indinc][apres]!=voisins[inddim][indinc][1])
+              break ;
+        }
+        if (inddim==nbexps && voisins[0][indinc][apres]>=0)
+        {
+          completion[2*nbpredsfaites]=issech[voisins[0][indinc][apres]];
+          completion[2*nbpredsfaites+1]=indinc;
+          nbpredsfaites++;
+        }
+      }      
+    }
+  }
+  return nbpredsfaites ;
 }

@@ -38,7 +38,7 @@ noise=0
 knowndims=1
 
 x=rnorm(lon)
-y=x+noise*rnorm(lon)
+y=2*x+noise*rnorm(lon)
 donori=as.data.frame(cbind(x,y))
 depori=estimdep(donori,c("x","y"),subsampsize)
 ##

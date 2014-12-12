@@ -9,6 +9,7 @@
 SEXP InterCopulation(
   SEXP Rrechant,
   SEXP Rimaxechant, SEXP Rimaxssech, SEXP Rimaxdim,
+  SEXP Rimixties,
   SEXP Riu, SEXP Rimaxtir);
 
 SEXP InterTir(

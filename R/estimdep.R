@@ -1,7 +1,7 @@
-estimdep <- function(dataframe,varnames,subsampsize,nbsafe=5)
+estimdep <- function(dataframe,varnames,subsampsize,nbsafe=5,mixties=FALSE)
 {
   dimension=length(varnames)
-  copcomp=corc(dataframe,varnames,subsampsize,nbsafe)
+  copcomp=corc(dataframe,varnames,subsampsize,nbsafe,mixties)
   FdRinv <- list()
   FdR <- list()
   for (var in varnames)
@@ -13,9 +13,6 @@ estimdep <- function(dataframe,varnames,subsampsize,nbsafe=5)
     FdR[[numvar]]=approxfun(values,steps,rule=2:2)
   }
   if(copcomp$ties>0.5*copcomp$nsubsampreal)
-    warning("To many ties")
-  return(list(cop=copcomp$cop,FdRinv=FdRinv,FdR=FdR,
-              varnames=varnames,
-              subsampsize=subsampsize,nbsafe=nbsafe))
+    warning("Too many ties")
+  return(list(cop=copcomp$cop,FdRinv=FdRinv,FdR=FdR,varnames=varnames))
 } 
-

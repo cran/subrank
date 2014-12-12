@@ -8,7 +8,7 @@ Function to estimate copula using ranks and sub-sampling, minimal version.
 Minimal version of function corc.
 }
 \usage{
-corc0(datavector,sampsize,dimension,subsampsize,nboot,u)
+corc0(datavector,sampsize,dimension,subsampsize,nboot,u,mixties=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -30,9 +30,12 @@ the number of sub-samples (must be big)
   \item{u}{
 a random seed, integer
 }
+  \item{mixties}{
+if \code{TRUE}, put equal weight on tied values, using random permutations 
+}
 }
 \value{
-the number of hits for each vector of ranks, plus 2 last values of the vector : number of ties and number of subsamples really used.
+the number of hits for each vector of ranks, plus 2 last values of the vector : number of ties and number of sub-samples really used.
 }
 \author{
 Jerome Collet

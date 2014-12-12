@@ -8,7 +8,7 @@ Dependence estimation
 From a set of observations, builds a description of the multivariate distribution
 }
 \usage{
-estimdep(dataframe,varnames,subsampsize,nbsafe=5)
+estimdep(dataframe,varnames,subsampsize,nbsafe=5,mixties=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,14 +24,15 @@ the sub-sample size
   \item{nbsafe}{
 the ratio between the discretized copula size and the number of sub-samples
 }
+  \item{mixties}{
+if \code{TRUE}, put equal weight on tied values, using random permutations 
+}
 }
 \value{
 the description of the dependence, it is an object with the following parts:
   \item{cop}{the array representing the discretized copula}
   \item{margins}{the matrix representing the margins, estimated using kernel density estimation}
   \item{varnames}{the names of the variables}
-  \item{subsampsize}{as in the function call}
-  \item{nbsafe}{as in the function call}
 }
 \author{
 Jerome Collet

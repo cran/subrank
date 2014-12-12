@@ -8,7 +8,7 @@ Function to estimate copula using ranks and sub-sampling
 Takes a sample, its dimension, a sub-sample size, and returns a discrete copula.
 }
 \usage{
-corc(dataframe, varnames, subsampsize, nbsafe=5)
+corc(dataframe, varnames, subsampsize, nbsafe=5,mixties=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,6 +24,9 @@ the sub-sample size
   \item{nbsafe}{
 the ratio between the number of sub-samples and the cardinality of the discretized copula.
 }
+  \item{mixties}{
+if \code{TRUE}, put equal weight on tied values, using random permutations 
+}
 }
 \value{
 \item{cop}{an array representing the discretized copula}
@@ -31,8 +34,6 @@ the ratio between the number of sub-samples and the cardinality of the discretiz
 \item{nsubsampreal}{the effective number of sub-samples drawn}
 \item{varnames}{the name of the variables studied}
 \item{nnm}{the number of observations without missing values}
-\item{subsampsize}{as in the function call}
-\item{nbsafe}{as in the function call}
 }
 \author{
 Jerome Collet
