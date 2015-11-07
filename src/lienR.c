@@ -25,22 +25,23 @@ SEXP InterCopulation(
 
 SEXP InterPredFly(
   SEXP Rnbcomp, SEXP Rnbexps, SEXP Rnbinc, SEXP Rnbpreds,
-  SEXP Rsubsampsize, SEXP Rmixties, SEXP Rmaxtirs,
+  SEXP Rsubsampsize, SEXP Rmixties, SEXP Rmaxtirs, SEXP Rstep,
   SEXP Rcompleteobs, SEXP Rincompleteobs)
 {
   Rcompleteobs=coerceVector(Rcompleteobs,REALSXP);
   Rincompleteobs=coerceVector(Rincompleteobs,REALSXP);
+  Rstep=coerceVector(Rstep,INTSXP);
   double *completeobs=REAL(Rcompleteobs), *incompleteobs=REAL(Rincompleteobs);
   int *nbcomp=INTEGER(Rnbcomp), *nbexps=INTEGER(Rnbexps),
     *nbinc=INTEGER(Rnbinc), *nbpreds=INTEGER(Rnbpreds),
     *subsampsize=INTEGER(Rsubsampsize),
-    *mixties=INTEGER(Rmixties), *maxtirs=INTEGER(Rmaxtirs) ;
+    *mixties=INTEGER(Rmixties), *maxtirs=INTEGER(Rmaxtirs), *step=INTEGER(Rstep) ;
   SEXP Rcompletion;
   int *completion;
   PROTECT(Rcompletion = allocVector(INTSXP, *nbpreds * *nbinc));
   completion=INTEGER(Rcompletion);
   PredFly( nbcomp, nbexps, nbinc, nbpreds,
-         subsampsize, mixties, maxtirs,
+         subsampsize, mixties, maxtirs, step,
          completeobs, incompleteobs, completion );
   UNPROTECT(1);
   return(Rcompletion);

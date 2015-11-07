@@ -7,6 +7,8 @@
 
 void Tri( double *cle, int *trace, int lon );
 
+void TriEntier( int *rcle, int imax );
+
 int Ajoutscopule( double *rechant, rk_state *rkfil, int *issech, int *iajoutscop,
   const int imaxssech, const int imaxechant, const int imaxdim ,
   const int imixties ) ;
@@ -21,11 +23,11 @@ double NumComb( int n, int p );
 void Combinaison( int *ssech, int numero, int n, int p );
 
 void PredFly( int *nbcomp, int *nbexps, int *nbinc, int *nbpreds,
-  int *subsampsize, int *mixties, int *maxtirs,
+  int *subsampsize, int *mixties, int *maxtirs, int *step,
   double *completeobs, double *incompleteobs, int *completion );
 
 int PredFlyUnic( int nbcomp, int nbexps, int nbinc,
-  int subsampsize, int mixties,
+  int subsampsize, int mixties, int maxstep, int *step,
   rk_state *rkfil, int *permutinc,
   double *completeobs, double *incompleteobs, int *completion );
 

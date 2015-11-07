@@ -47,6 +47,29 @@ void Tri( double *rcle, int *itrace, int imax )
   }
 }
 
+/* glute moche a resorber dqp */
+void TriEntier( int *rcle, int imax )
+{
+  const int isaut[]={4592,1968,861,336,112,48,21,7,3,1};
+  const int imaxsaut=sizeof(isaut)/sizeof(isaut[0]);
+  int k;
+  double vcle ;
+  for( k=0; k<imaxsaut; k++ )
+  {
+    int i;
+    for( i=isaut[k]; i<imax; i++ )
+    {
+      vcle=rcle[i];
+      int j=i;
+      while( j>=isaut[k] && rcle[j-isaut[k]]>vcle )
+      {
+        rcle[j]=rcle[j-isaut[k]];
+        j=j-isaut[k];
+      }
+      rcle[j]=vcle;
+    }
+  }
+}
 
 /*
 programmation de C_n^p, recursive et pas tres efficace,
@@ -389,18 +412,21 @@ void CopulationDet(double *rechant,
 }
 
 void PredFly( int *nbcomp, int *nbexps, int *nbinc, int *nbpreds,
-  int *subsampsize, int *mixties, int *maxtirs,
+  int *subsampsize, int *mixties, int *maxtirs, int *step,
   double *completeobs, double *incompleteobs, int *completion )
 {
   const int bloctirs=1000 ;
   int permutinc[*nbexps**nbinc], tabnbpredsfaites[*nbinc],
-    inddim, indinc, indtirs, resteapredire=1 ;
+    inddim, indinc, indtirs, resteapredire=1, maxstep=0 ;
   for (indinc=0 ; indinc<*nbinc; indinc++ )
   { tabnbpredsfaites[indinc]=0; }
   for (indinc=*nbinc**nbpreds-1 ; indinc>=0; indinc-- )
   { completion[indinc]=-1; }
   for( inddim=0; inddim<*nbexps; inddim++ )
-  { Tri(&incompleteobs[inddim**nbinc],&permutinc[inddim**nbinc],*nbinc); }
+  {
+    Tri(&incompleteobs[inddim**nbinc],&permutinc[inddim**nbinc],*nbinc);
+    if (maxstep<step[inddim]) { maxstep=step[inddim]; } 
+  }
   for ( indtirs=0 ; indtirs<*maxtirs && resteapredire==1 ; indtirs+= bloctirs )
   {
     #pragma omp parallel
@@ -408,14 +434,14 @@ void PredFly( int *nbcomp, int *nbexps, int *nbinc, int *nbpreds,
       rk_state rkfil ;
       rk_randomseed(&rkfil) ;
       int *completemp ;
-      completemp=(int *)malloc (bloctirs**nbinc*4 * sizeof (int));
+      completemp=(int *)malloc (bloctirs**nbinc*4*sizeof (int));
       int nbpredsfaites, indtirs2 ;
       nbpredsfaites=0 ;
       #pragma omp for schedule(static)
       for ( indtirs2=0 ; indtirs2< bloctirs; indtirs2++ )
       {
         nbpredsfaites+=PredFlyUnic( *nbcomp, *nbexps, *nbinc,
-          *subsampsize, *mixties,
+          *subsampsize, *mixties, maxstep, step,
           &rkfil, permutinc,
           completeobs, incompleteobs, &completemp[2*nbpredsfaites] ) ;
       }
@@ -429,7 +455,7 @@ void PredFly( int *nbcomp, int *nbexps, int *nbinc, int *nbpreds,
           {
             completion[indincourant**nbpreds+tabnbpredsfaites[indincourant]]=
               completemp[2*indpredfaite] ;
-            tabnbpredsfaites[indincourant]++; /* ??????????????????? */
+            tabnbpredsfaites[indincourant]++;
           }
         }
         resteapredire=0;
@@ -444,14 +470,15 @@ void PredFly( int *nbcomp, int *nbexps, int *nbinc, int *nbpreds,
 
 
 int PredFlyUnic( int nbcomp, int nbexps, int nbinc,
-  int subsampsize, int mixties,
+  int subsampsize, int mixties, int maxstep, int *step,
   rk_state *rkfil, int *permutincloc,
   double *completeobs, double *incompleteobs, int *completion )
 {
   int issech[subsampsize], permutss[nbexps][subsampsize],
-    voisins[nbexps][nbinc][2],
+    voisins[nbexps][nbinc][2*maxstep],
     inddim, nbpredsfaites=0 ;
   double rechtemp[nbexps][subsampsize];
+  /* tir ss-echantillon de completes, tri sur chaque dimension */
   TirSech( issech, rkfil, nbcomp, subsampsize );
   for( inddim=0; inddim<nbexps; inddim++ )
   {
@@ -463,9 +490,13 @@ int PredFlyUnic( int nbcomp, int nbexps, int nbinc,
     }
     Tri(&rechtemp[inddim][0],&permutss[inddim][0],subsampsize);
   }
+  /*
+  entrelacer ss-ech de completes et ttes incompletes, triees,
+  avec trace de l'origine de l'observation
+  */
   for( inddim=0; inddim<nbexps; inddim++ )
   {
-    int ranginc=0, rangcomp=0,indobsqcq=0, indcompdernier,
+    int ranginc=0, rangcomp=0,indobsqcq=0,
       numobsqcq[nbexps][nbinc+subsampsize], obsinc[nbexps][nbinc+subsampsize]  ;
     while( rangcomp<subsampsize && ranginc<nbinc )
     {
@@ -498,50 +529,97 @@ int PredFlyUnic( int nbcomp, int nbexps, int nbinc,
       ranginc++;
       indobsqcq++;
     }
-    indcompdernier=-1;
+    /* on remplit le tableau des voisins des incompletes, dans un sens puis dans l'autre */
+    int indcompdernier[step[inddim]], indroulant, indvoisin ;
+    for (indvoisin=0; indvoisin<step[inddim]; indvoisin++)
+    { indcompdernier[indvoisin]=-1; }
+    indroulant=0;
     for(indobsqcq=0; indobsqcq<subsampsize+nbinc; indobsqcq++)
     { 
       if (obsinc[inddim][indobsqcq]==1)
       {
-        voisins[inddim][numobsqcq[inddim][indobsqcq]][0]=indcompdernier;
+        for (indvoisin=0; indvoisin<step[inddim]; indvoisin++)
+        {
+          voisins[inddim][numobsqcq[inddim][indobsqcq]][indvoisin]=
+            indcompdernier[indvoisin] ;
+        }
       }
       else
       {
-        indcompdernier=numobsqcq[inddim][indobsqcq];
+        indcompdernier[indroulant]=numobsqcq[inddim][indobsqcq];
+        indroulant++;
+        if (indroulant>=step[inddim]) { indroulant=0; }
       }
     }
-    indcompdernier=-1;
+    for (indvoisin=0; indvoisin<step[inddim]; indvoisin++)
+    { indcompdernier[indvoisin]=-1; }
+    indroulant=0;
     for(indobsqcq=subsampsize+nbinc-1; indobsqcq>=0; indobsqcq--)
     { 
       if (obsinc[inddim][indobsqcq]==1)
       {
-        voisins[inddim][numobsqcq[inddim][indobsqcq]][1]=indcompdernier;
+        for (indvoisin=0; indvoisin<step[inddim]; indvoisin++)
+        {
+          voisins[inddim][numobsqcq[inddim][indobsqcq]][step[inddim]+indvoisin]=
+            indcompdernier[indvoisin] ;
+        }
       }
       else
       {
-        indcompdernier=numobsqcq[inddim][indobsqcq];
+        indcompdernier[indroulant]=numobsqcq[inddim][indobsqcq];
+        indroulant++;
+        if (indroulant>=step[inddim]) { indroulant=0; }
       }
     }
   }
+  /*
+  on regarde si une incomplete est voisine d'une complete sur toutes les dimensions
+  NB : l'indicage de voisins et le resultat sont des NUMEROS d'observation, pas des rangs.
+  Donc, leur egalite d'une dimension a l'autre a un sens.
+  */
   {
-    int indinc, apres ;
+    int indinc ;
     for ( indinc=0; indinc<nbinc; indinc++ )
     {
-      for (apres=0 ; apres<=1; apres++)
+      for( inddim=0; inddim<nbexps; inddim++ )
+      { TriEntier(&voisins[inddim][indinc][0],2*step[inddim]); }
+    }
+    for ( indinc=0; indinc<nbinc; indinc++ )
+    {
+      int obscomp, indobscomp=0, indobscomp0=0 ;
+      inddim=0;
+      obscomp=voisins[0][indinc][indobscomp0];
+      while( indobscomp0<2*step[0] )
       {
-        for( inddim=1; inddim<nbexps; inddim++ )
+        if (voisins[inddim][indinc][indobscomp]==obscomp)
         {
-          if (voisins[0][indinc][apres]!=voisins[inddim][indinc][0] &&
-              voisins[0][indinc][apres]!=voisins[inddim][indinc][1])
-              break ;
-        }
-        if (inddim==nbexps && voisins[0][indinc][apres]>=0)
+          if (inddim==nbexps-1)
+          {
+            if (obscomp>=0)
+            {
+              completion[2*nbpredsfaites]=issech[obscomp];
+              completion[2*nbpredsfaites+1]=indinc;
+              nbpredsfaites++;
+            }
+            inddim=0;
+            indobscomp0++;
+            obscomp=voisins[0][indinc][indobscomp0];
+          } else
+          {
+            inddim++;
+            indobscomp=0;
+          }
+        } else
         {
-          completion[2*nbpredsfaites]=issech[voisins[0][indinc][apres]];
-          completion[2*nbpredsfaites+1]=indinc;
-          nbpredsfaites++;
+          if (voisins[inddim][indinc][indobscomp]<obscomp && indobscomp < 2*step[inddim])
+          { indobscomp++; } else
+          {
+            inddim=0;
+            indobscomp0++;
+            obscomp=voisins[0][indinc][indobscomp0];            
+          }
         }
-      }      
+      }
     }
   }
   return nbpredsfaites ;

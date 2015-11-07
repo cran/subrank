@@ -1,2 +1,4 @@
+importFrom("graphics", "par", "plot.new", "symbols", "text")
+importFrom("stats", "approxfun", "rbeta", "rbinom", "rnorm", "runif")
 useDynLib( subrank, InterPredFly, InterCopulation, InterTir )
 export( corc, corc0, desscop, desscoptous, simnul, simany, estimdep, predictdep, predonfly )
