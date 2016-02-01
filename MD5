@@ -1,4 +1,4 @@
-ea83efe057b84ea260d7abd0c85503c8 *DESCRIPTION
+1f2a86e208f9e510733f6f47530c0a07 *DESCRIPTION
 97fcdb757cac97cf81cdf9966b1ed01c *NAMESPACE
 2e895db1101b96ffab072ea857a51731 *R/corc.R
 a2323b27305dc42e9090ec8f92cceb0d *R/corc0.R
@@ -19,14 +19,14 @@ cbc868d17766c8fa7ad6a64aa358ad2c *man/desscoptous.Rd
 6e422ca35c91c25d7ebb82f7112d7fe1 *man/predonfly.Rd
 5f0521e11ebd5ccd44234853dc82c8d1 *man/simany.Rd
 a8124a9e1e77332dfb283f55dfb7a05b *man/simnul.Rd
-01a130b73673d2c2192ce3a087d5d2cf *man/subrank-package.Rd
+1e3c1b0078b3e3932104d5156225da88 *man/subrank-package.Rd
 95e3011e37d9dde0d75f3a3819b2acd3 *src/Makevars
 2b862240ad9d5c961f9e456d7502f254 *src/Tir.c
 0fec4ce6bb6750f8b50bd7ec52aaa41e *src/Tir.h
 b25d77f98a9db12f7f12a6523f3a53f1 *src/copc.c
 3ce2abeab797bc097eca3c16ad01edcb *src/copc.h
 813a833fe305c5859fc21f49a2d3824d *src/lienR.c
-75b37cbb6f6395ec253bc2365e875adc *src/lienR.h
+ec0e95d7af15fa27ed3462d0563b3c57 *src/lienR.h
 c0ded4a691a42cd2e30777a785a8c898 *src/randomkit.h
 6c18948d77c2d32d1f3522816487cd3d *src/rk_isaac.c
 cbc79b4e5878a416525d9bd364fee1a7 *src/rk_isaac.h

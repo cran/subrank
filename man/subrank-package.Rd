@@ -12,7 +12,7 @@ Taking a sample, its dimension, and a sub-sample size, allows to estimate a disc
 \tabular{ll}{
 Package: \tab subrank\cr
 Type: \tab Package\cr
-Version: \tab 0.9.5\cr
+Version: \tab 0.9.6\cr
 Date: \tab 2016-02-02\cr
 License: \tab GPL (>= 3)\cr
 LazyLoad: \tab yes\cr
