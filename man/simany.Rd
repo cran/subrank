@@ -50,9 +50,9 @@ depquad <- function(lon,dd,a)
   reste=rnorm((dd-2)*lon)
   return(matrix(ncol=dd,c(x,y,reste)))
 }
-sims0=simany(101,8,50,nbsafe=1,fun=3)
-seuils=apply(sims0$lrs,3,quantile,0.95)
-seuils=matrix(ncol=4,nrow=50,seuils,byrow=TRUE)
-sims1=simany(101,8,50,nbsafe=1,fun=depquad,a=0.3,dd=3)
+sims0=simany(101,5,50,nbsafe=1,fun=3)
+seuils=apply(sims0$lrs,3,quantile,0.9)
+seuils=matrix(ncol=4,nrow=10,seuils,byrow=TRUE)
+sims1=simany(101,5,10,nbsafe=1,fun=depquad,a=0.3,dd=3)
 apply(sims1$lrs[,1,]>seuils,2,mean)
 }

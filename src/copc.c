@@ -602,8 +602,8 @@ int PredFlyUnic( int nbcomp, int nbexps, int nbinc,
               nbpredsfaites++;
             }
             inddim=0;
-            indobscomp0++;
             obscomp=voisins[0][indinc][indobscomp0];
+            indobscomp0++;
           } else
           {
             inddim++;
@@ -611,7 +611,7 @@ int PredFlyUnic( int nbcomp, int nbexps, int nbinc,
           }
         } else
         {
-          if (voisins[inddim][indinc][indobscomp]<obscomp && indobscomp < 2*step[inddim])
+          if (voisins[inddim][indinc][indobscomp]<obscomp && indobscomp < 2*step[inddim]-1)
           { indobscomp++; } else
           {
             inddim=0;

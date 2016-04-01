@@ -41,10 +41,10 @@ Jerome Collet
 \examples{
 library(datasets)
 # plot(swiss)
-c=corc(swiss,1:3,8)
+c=corc(swiss,1:3,5)
 c
-RV=sum(c$cop*log(c$cop),na.rm=TRUE)+3*log(8)
-sims=simnul(47,3,8,100)
+RV=sum(c$cop*log(c$cop),na.rm=TRUE)+3*log(5)
+sims=simnul(47,3,5,50)
 pvalue=mean(RV<sims$lrs)
 pvalue
 RV
