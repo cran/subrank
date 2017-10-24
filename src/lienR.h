@@ -1,7 +1,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <math.h>
-#ifdef _OPENMP
+#ifdef SUPPORT_OPENMP
 #include <omp.h>
 #endif
 #include "randomkit.h"
@@ -16,9 +16,3 @@ SEXP InterTir(
   SEXP Rnbobsconnues, SEXP Rnbdimconnues, SEXP Rnbdiminc, SEXP Rtailsousech,
   SEXP Runif,
   SEXP Rcop, SEXP Rrangconnues, SEXP Rdimconnues, SEXP Rdimincs);
-
-SEXP InterPredFly(
-  SEXP Rnbcomp, SEXP Rnbexps, SEXP Rnbinc, SEXP Rnbpreds,
-  SEXP Rsubsampsize, SEXP Rmixties, SEXP Rmaxtirs, SEXP Rstep,
-  SEXP Rcompleteobs, SEXP Rincompleteobs);
-

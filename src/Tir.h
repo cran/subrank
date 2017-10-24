@@ -1,8 +1,5 @@
 #include <stdlib.h>
 #include <math.h>
-#ifdef _OPENMP
-#include <omp.h>
-#endif
 
 int Suivant(int nbchiffres, int base, int *chiffres);
 

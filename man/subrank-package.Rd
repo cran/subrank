@@ -12,12 +12,12 @@ Taking a sample, its dimension, and a sub-sample size, allows to estimate a disc
 \tabular{ll}{
 Package: \tab subrank\cr
 Type: \tab Package\cr
-Version: \tab 0.9.7\cr
-Date: \tab 2016-03-31\cr
+Version: \tab 0.9.1\cr
+Date: \tab 2014-12-12\cr
 License: \tab GPL (>= 3)\cr
 LazyLoad: \tab yes\cr
 }
-The most important functions are corc and predonfly: first one estimates the discrete copula, second predicts using a copula estimated on the fly.
+The most important functions are corc and predonfly: first one estimates the discrete copula, second predicts using a copula estimated on the fly..
 }
 \author{
 Jerome Collet
