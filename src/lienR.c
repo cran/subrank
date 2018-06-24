@@ -6,19 +6,22 @@ SEXP InterCopulation(
   SEXP Rrechant,
   SEXP Rimaxechant, SEXP Rimaxssech, SEXP Rimaxdim,
   SEXP Rimixties,
-  SEXP Riu, SEXP Rimaxtir)
+  SEXP Riu, SEXP Rimaxtir,
+  SEXP Rnthreads)
 {
   Rrechant=coerceVector(Rrechant,REALSXP);
   double *rechant=REAL(Rrechant);
   int *imaxechant=INTEGER(Rimaxechant), *imaxssech=INTEGER(Rimaxssech),
     *imaxdim=INTEGER(Rimaxdim), *imaxtir=INTEGER(Rimaxtir), 
-    *imixties=INTEGER(Rimixties), *iu=INTEGER(Riu);
+    *imixties=INTEGER(Rimixties), *iu=INTEGER(Riu),
+    *inthreads=INTEGER(Rnthreads);
   const int imaxcop=floor(.5+pow((int)*imaxssech,(int)*imaxdim));
   SEXP Ricop;
   int *icop;
   PROTECT(Ricop = allocVector(INTSXP, imaxcop+2));
   icop=INTEGER(Ricop);
-  Copulation(rechant, imaxechant, imaxssech, imaxdim, imixties, iu, imaxtir, icop);
+  Copulation(rechant, imaxechant, imaxssech, imaxdim, imixties, iu, imaxtir, inthreads,
+    icop);
   UNPROTECT(1);
   return(Ricop);
 }
@@ -26,7 +29,8 @@ SEXP InterCopulation(
 SEXP InterPredFly(
   SEXP Rnbcomp, SEXP Rnbexps, SEXP Rnbinc, SEXP Rnbpreds,
   SEXP Rsubsampsize, SEXP Rmixties, SEXP Rmaxtirs,
-  SEXP Rcompleteobs, SEXP Rincompleteobs)
+  SEXP Rcompleteobs, SEXP Rincompleteobs,
+  SEXP Rnthreads)
 {
   PROTECT(Rcompleteobs=coerceVector(Rcompleteobs,REALSXP));
   PROTECT(Rincompleteobs=coerceVector(Rincompleteobs,REALSXP));
@@ -34,22 +38,24 @@ SEXP InterPredFly(
   int *nbcomp=INTEGER(Rnbcomp), *nbexps=INTEGER(Rnbexps),
     *nbinc=INTEGER(Rnbinc), *nbpreds=INTEGER(Rnbpreds),
     *subsampsize=INTEGER(Rsubsampsize),
-    *mixties=INTEGER(Rmixties), *maxtirs=INTEGER(Rmaxtirs) ;
+    *mixties=INTEGER(Rmixties), *maxtirs=INTEGER(Rmaxtirs),
+	*inthreads=INTEGER(Rnthreads) ;
   SEXP Rcompletion;
   int *completion;
   PROTECT(Rcompletion = allocVector(INTSXP, *nbpreds * *nbinc));
   completion=INTEGER(Rcompletion);
   PredFly( nbcomp, nbexps, nbinc, nbpreds,
          subsampsize, mixties, maxtirs,
-         completeobs, incompleteobs, completion );
+         completeobs, incompleteobs, inthreads,
+         completion );
   UNPROTECT(3);
   return(Rcompletion);
 }
 
 SEXP InterTir(
   SEXP Rnbobsconnues, SEXP Rnbdimconnues, SEXP Rnbdiminc, SEXP Rtailsousech, SEXP Runif,
-  SEXP Rcop, SEXP Rrangconnues, SEXP Rdimconnues, SEXP Rdimincs
-  )
+  SEXP Rcop, SEXP Rrangconnues, SEXP Rdimconnues, SEXP Rdimincs,
+  SEXP Rnthreads)
 {
   PROTECT(Runif=coerceVector(Runif,REALSXP));
   PROTECT(Rcop=coerceVector(Rcop,REALSXP));
@@ -59,14 +65,15 @@ SEXP InterTir(
   int *nbobsconnues=INTEGER(Rnbobsconnues), *nbdimconnues=INTEGER(Rnbdimconnues),
     *nbdiminc=INTEGER(Rnbdiminc),
     *tailsousech=INTEGER(Rtailsousech), *rangconnues=INTEGER(Rrangconnues),
-    *dimconnues=INTEGER(Rdimconnues), *dimincs=INTEGER(Rdimincs) ;
+    *dimconnues=INTEGER(Rdimconnues), *dimincs=INTEGER(Rdimincs),
+    *inthreads=INTEGER(Rnthreads) ;
   double *unif=REAL(Runif), *cop=REAL(Rcop);
   SEXP Rrangprevues;
   int *rangprevues;
   PROTECT(Rrangprevues = allocVector(INTSXP, *nbdiminc**nbobsconnues));
   rangprevues=INTEGER(Rrangprevues);
   TirMultCop(nbobsconnues,nbdimconnues,nbdiminc,tailsousech,unif,
-  cop, rangconnues, dimconnues, dimincs,
+  cop, rangconnues, dimconnues, dimincs, inthreads,
   rangprevues);
   UNPROTECT(6);
   return(Rrangprevues);
@@ -76,9 +83,9 @@ SEXP InterTir(
 #define CALLDEF(name, n)  {#name, (DL_FUNC) &name, n}
 
 static const R_CallMethodDef R_CallDef[] = {
-    CALLDEF(InterCopulation, 7),
-    CALLDEF(InterPredFly, 9),
-    CALLDEF(InterTir, 9),
+    CALLDEF(InterCopulation, 8),
+    CALLDEF(InterPredFly, 10),
+    CALLDEF(InterTir, 10),
     {NULL, NULL, 0}
 };
 

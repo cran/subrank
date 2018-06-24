@@ -220,6 +220,7 @@ void Copulation(
   int *imaxechant, int *imaxssech, int *imaxdim,
   int *imixties,
   int *iu, int *imaxtir,
+  int *inthreads,
   int *icop )
 {
   /* initialisations */
@@ -236,18 +237,21 @@ void Copulation(
     if ( imaxcop>CopMaxRed )
     { 
       CopulationStoAto
-        (rechant,*imaxechant,*imaxssech,*imaxdim,*imixties,*iu,*imaxtir,icop);
+        (rechant,*imaxechant,*imaxssech,*imaxdim,*imixties,*iu,*imaxtir,*inthreads,
+		  icop);
     }
     else
     { 
       CopulationStoRed
-        (rechant,*imaxechant,*imaxssech,*imaxdim,*imixties,*iu,*imaxtir,icop);
+        (rechant,*imaxechant,*imaxssech,*imaxdim,*imixties,*iu,*imaxtir,*inthreads,
+		  icop);
     }
     icop[imaxcop+1]=*imaxtir;
   }
   else 
   {
-    CopulationDet(rechant,*imaxechant,*imaxssech,*imaxdim,*imixties,icop);
+    CopulationDet(rechant,*imaxechant,*imaxssech,*imaxdim,*imixties,*inthreads,
+	  icop);
     icop[imaxcop+1]=NumComb(*imaxechant,*imaxssech);
   }
 }
@@ -262,11 +266,12 @@ void CopulationStoAto( double *rechant,
   const int imaxechant, const int imaxssech, const int imaxdim,
   const int imixties,
   int iu, int imaxtir,
+  int inthreads,
   int *icop )
 {
   /* initialisations */
   int indtir, itie=0 ;
-  #pragma omp parallel reduction (+:itie)
+  #pragma omp parallel reduction (+:itie) num_threads(inthreads) 
   {
     rk_state rkfil ;
     rk_randomseed(&rkfil);
@@ -301,12 +306,13 @@ void CopulationStoRed( double *rechant,
   const int imaxechant, const int imaxssech, const int imaxdim,
   const int imixties,
   int iu, int imaxtir,
+  int inthreads,
   int *icop )
 {
   const int imaxcop=floor(.5+pow(imaxssech,imaxdim)) ;
   int indtir, itie=0 ; /* ici ou apres parallel ??? */
   /* enumeration des sous-echantillons */
-  #pragma omp parallel reduction (+:itie)
+  #pragma omp parallel reduction (+:itie) num_threads(inthreads) 
   {
     rk_state rkfil ;
     rk_randomseed(&rkfil);
@@ -348,13 +354,14 @@ avec une copie de la copule par thread
 void CopulationDet(double *rechant,
   const int imaxechant, const int imaxssech, const int imaxdim,
   const int imixties,
+  int inthreads,
   int *icop)
 {
   const int imaxcop=floor(.5+pow(imaxssech,imaxdim)) ;
   /* initialisations */
   int indcomb, itie=0 ;
   /* enumeration des sous-echantillons */
-  #pragma omp parallel reduction (+:itie)
+  #pragma omp parallel reduction (+:itie) num_threads(inthreads) 
   {
     rk_state rkfil ;
     rk_randomseed(&rkfil);
@@ -390,7 +397,9 @@ void CopulationDet(double *rechant,
 
 void PredFly( int *nbcomp, int *nbexps, int *nbinc, int *nbpreds,
   int *subsampsize, int *mixties, int *maxtirs,
-  double *completeobs, double *incompleteobs, int *completion )
+  double *completeobs, double *incompleteobs,
+  int *inthreads,
+  int *completion )
 {
   const int bloctirs=1000 ;
   int permutinc[*nbexps**nbinc], tabnbpredsfaites[*nbinc],
@@ -403,7 +412,7 @@ void PredFly( int *nbcomp, int *nbexps, int *nbinc, int *nbpreds,
   { Tri(&incompleteobs[inddim**nbinc],&permutinc[inddim**nbinc],*nbinc); }
   for ( indtirs=0 ; indtirs<*maxtirs && resteapredire==1 ; indtirs+= bloctirs )
   {
-    #pragma omp parallel
+      #pragma omp parallel num_threads(*inthreads) 
     {
       rk_state rkfil ;
       rk_randomseed(&rkfil) ;
@@ -439,7 +448,7 @@ void PredFly( int *nbcomp, int *nbexps, int *nbinc, int *nbpreds,
       }
       free(completemp);
     }
-  }
+    }
 }
 
 

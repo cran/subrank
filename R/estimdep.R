@@ -1,7 +1,7 @@
-estimdep <- function(dataframe,varnames,subsampsize,nbsafe=5,mixties=FALSE)
+estimdep <- function(dataframe,varnames,subsampsize,nbsafe=5,mixties=FALSE,nthreads=2)
 {
   dimension=length(varnames)
-  copcomp=corc(dataframe,varnames,subsampsize,nbsafe,mixties)
+  copcomp=corc(dataframe,varnames,subsampsize,nbsafe,mixties,nthreads=nthreads)
   FdRinv <- list()
   FdR <- list()
   for (var in varnames)

@@ -70,9 +70,10 @@ void TirMultCop(const int *nbobsconnues, const int *nbdimconnues,
   const int *nbdiminc, const int *tailsousech,
   double *unif,
   const double *cop, const int *rangconnues, const int *dimconnues, const int *dimincs,
+  int *inthreads,
   int *rangprevues)
 {
-  #pragma omp parallel
+  #pragma omp parallel num_threads(*inthreads)
   {
     int NumObs ;
     #pragma omp for schedule(dynamic)

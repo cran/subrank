@@ -8,7 +8,7 @@ Test statistic distribution under independence hypothesis
 Simulates the test statistic, under independence
 }
 \usage{
-simnul(sampsize, dimension, subsampsizes, sampnum,KL=TRUE,nbsafe=5)
+simnul(sampsize, dimension, subsampsizes, sampnum,KL=TRUE,nbsafe=5,nthreads=2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -30,6 +30,8 @@ if TRUE, returns the Kullback-Leibler divergence with the independent case, if F
   \item{nbsafe}{
 the ratio between the number of sub-samples and the cardinality of the discretized copula.
 }
+  \item{nthreads}{
+number of number of threads, assumed to be strictly positive. For "full throttle" computations, consider using parallel::detectCores()}
 }
 \value{
 \item{lrs }{the distances with independent case}

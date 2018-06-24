@@ -22,7 +22,8 @@ void Combinaison( int *ssech, int numero, int n, int p );
 
 void PredFly( int *nbcomp, int *nbexps, int *nbinc, int *nbpreds,
   int *subsampsize, int *mixties, int *maxtirs,
-  double *completeobs, double *incompleteobs, int *completion );
+  double *completeobs, double *incompleteobs,   int *inthreads,
+  int *completion );
 
 int PredFlyUnic( int nbcomp, int nbexps, int nbinc,
   int subsampsize, int mixties,
@@ -33,21 +34,25 @@ void Copulation(double *rechant,
   int *imaxechant, int *imaxssech, int *imaxdim,
   int *imixties,
   int *iu, int *imaxtir,
+  int *inthreads,
   int *icop);
 
 void CopulationStoRed( double *rechant, 
   const int imaxechant, const int imaxssech, const int imaxdim,
   const int imixties,
   const int iu, const int imaxtir,
+  int inthreads,
   int *icop );
 
 void CopulationStoAto( double *rechant, 
   const int imaxechant, const int imaxssech, const int imaxdim,
   const int imixties,
   const int iu, const int imaxtir,
+  int inthreads,
   int *icop );
 
 void CopulationDet( double *rechant,
   const int imaxechant, const int imaxssech, const int imaxdim,
   const int imixties,
+  int inthreads,
   int *icop );

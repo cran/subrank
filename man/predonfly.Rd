@@ -9,7 +9,7 @@ From two sets of observations, first one of complete observations and second one
 }
 \usage{
 predonfly(completeobs,incompleteobs,varnames,subsampsize,nbpreds=1,mixties=FALSE,
-          maxtirs=1e5,complete=TRUE)
+          maxtirs=1e5,complete=TRUE,nthreads=2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -37,6 +37,8 @@ the maximum number of sub-samples, to stop the computation even if they did not 
   \item{complete}{
 If \code{TRUE}, predictions are completed with incomplete observations
 }
+  \item{nthreads}{
+number of number of threads, assumed to be strictly positive. For "full throttle" computations, consider using parallel::detectCores()}
 }
 \value{
 the matrix of the completed observations

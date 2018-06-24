@@ -3,28 +3,23 @@
 \alias{subrank}
 \docType{package}
 \title{
-Package to estimate copula using ranks and sub-sampling
+\packageTitle{subrank}
 }
 \description{
-Taking a sample, its dimension, and a sub-sample size, allows to estimate a discretized copula. This object has interesting features: convergence to copula, robustness with respect to dimension.
+\packageDescription{subrank}
 }
 \details{
-\tabular{ll}{
-Package: \tab subrank\cr
-Type: \tab Package\cr
-Version: \tab 0.9.1\cr
-Date: \tab 2014-12-12\cr
-License: \tab GPL (>= 3)\cr
-LazyLoad: \tab yes\cr
-}
-The most important functions are corc and predonfly: first one estimates the discrete copula, second predicts using a copula estimated on the fly..
+
+The DESCRIPTION file:
+\packageDESCRIPTION{subrank}
+\packageIndices{subrank}
+Taking a sample, its dimension, and a sub-sample size, allows to estimate a discretized copula. This object has interesting features: convergence to copula, robustness with respect to dimension.
 }
 \author{
-Jerome Collet
+\packageAuthor{subrank}
 
-Maintainer: Jerome Collet <jeromepcollet@gmail.com>
+Maintainer: \packageMaintainer{subrank}
 }
-\keyword{ package }
 \examples{
 lon <- 31
 a <- 2.85

@@ -8,7 +8,7 @@ Probability forecasting
 From a set of incomplete observations, and a description of the dependence, provides simulated values of the unknown coordinates. It is also possible to simulate unconditionally, with empty observations.
 }
 \usage{
-predictdep(knownvalues,dependence,smoothing=c("Uniform","Beta"))
+predictdep(knownvalues,dependence,smoothing=c("Uniform","Beta"),nthreads=2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,6 +21,8 @@ the description of the dependence we want to use to forecast, as built by functi
   \item{smoothing}{
 the smoothing method for input and output ranks.
 }
+  \item{nthreads}{
+number of number of threads, assumed to be strictly positive. For "full throttle" computations, consider using parallel::detectCores()}
 }
 \value{
 the matrix of the completed observations

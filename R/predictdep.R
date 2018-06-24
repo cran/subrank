@@ -1,4 +1,4 @@
-predictdep <- function (knownvalues, dependence, smoothing = c("Uniform", "Beta")) 
+predictdep <- function (knownvalues, dependence, smoothing = c("Uniform", "Beta"),nthreads=2) 
 {
   smoothing <- match.arg(smoothing)
   NbKnownObs = dim(knownvalues)[1]
@@ -32,7 +32,7 @@ predictdep <- function (knownvalues, dependence, smoothing = c("Uniform", "Beta"
   rankpredicted = .Call("InterTir", as.integer(NbKnownObs), 
                         as.integer(NbKnownDims), as.integer(NbUnknwonDims), as.integer(SubSampSize), 
                         as.double(US), as.double(dependence$cop), as.integer(rankknownvalues), 
-                        as.integer(knowndims - 1), as.integer(UnknwonDims - 1)) + 
+                        as.integer(knowndims - 1), as.integer(UnknwonDims - 1), as.integer(nthreads)) + 
     1
   if (smoothing == "Uniform") {
     rankpredicted = (rankpredicted + runif(NbKnownObs * NbUnknwonDims) - 

@@ -1,4 +1,4 @@
-predonfly <- function (completeobs,incompleteobs,varnames,subsampsize,nbpreds=1,mixties=FALSE,maxtirs=1e5,complete=TRUE) 
+predonfly <- function (completeobs,incompleteobs,varnames,subsampsize,nbpreds=1,mixties=FALSE,maxtirs=1e5,complete=TRUE,nthreads=2) 
 {
   varexps=intersect(varnames,names(incompleteobs))
   nbexps=length(varexps)
@@ -15,7 +15,9 @@ predonfly <- function (completeobs,incompleteobs,varnames,subsampsize,nbpreds=1,
                         as.integer(nbinc),
                         as.integer(nbpreds), as.integer(subsampsize),
                         as.integer(mixties), as.integer(maxtirs),
-                        as.double(completeobs2), as.double(incompleteobs2))
+                        as.double(completeobs2), 
+                        as.double(incompleteobs2),
+                        as.integer(nthreads))
   is.na(completion)<-which(completion==-1)
   completion=completion+1
   completion = completeobs[setdiff(varnames,varexps)][completion,]

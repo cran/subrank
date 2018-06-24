@@ -8,7 +8,7 @@ Dependence estimation
 From a set of observations, builds a description of the multivariate distribution
 }
 \usage{
-estimdep(dataframe,varnames,subsampsize,nbsafe=5,mixties=FALSE)
+estimdep(dataframe,varnames,subsampsize,nbsafe=5,mixties=FALSE,nthreads=2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,6 +27,8 @@ the ratio between the discretized copula size and the number of sub-samples
   \item{mixties}{
 if \code{TRUE}, put equal weight on tied values, using random permutations 
 }
+  \item{nthreads}{
+number of number of threads, assumed to be strictly positive. For "full throttle" computations, consider using parallel::detectCores()}
 }
 \value{
 the description of the dependence, it is an object with the following parts:

@@ -1,5 +1,5 @@
 corc <-
-  function(dataframe,varnames,subsampsize,nbsafe=5,mixties=FALSE)
+  function(dataframe,varnames,subsampsize,nbsafe=5,mixties=FALSE,nthreads=2)
   {
     obs=dataframe[varnames]
     obs=subset(obs,apply(is.na(obs),1,sum)==0)
@@ -8,7 +8,7 @@ corc <-
     obs=as.numeric(unlist(obs))
     u=runif(1)*(2^31-1)
     nboot=nbsafe*subsampsize^dimension
-    cop=corc0( obs, nnm, dimension, subsampsize, nboot, u, mixties )
+    cop=corc0( obs, nnm, dimension, subsampsize, nboot, u, mixties, nthreads=nthreads )
     nbootreel=cop[subsampsize^dimension+2]
     ties=cop[subsampsize^dimension+1]
     cop=cop[1:subsampsize^dimension]

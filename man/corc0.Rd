@@ -8,7 +8,7 @@ Function to estimate copula using ranks and sub-sampling, minimal version.
 Minimal version of function corc.
 }
 \usage{
-corc0(datavector,sampsize,dimension,subsampsize,nboot,u,mixties=FALSE)
+corc0(datavector,sampsize,dimension,subsampsize,nboot,u,mixties=FALSE,nthreads=2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -33,6 +33,8 @@ a random seed, integer
   \item{mixties}{
 if \code{TRUE}, put equal weight on tied values, using random permutations 
 }
+  \item{nthreads}{
+number of number of threads, assumed to be strictly positive. For "full throttle" computations, consider using parallel::detectCores()}
 }
 \value{
 the number of hits for each vector of ranks, plus 2 last values of the vector : number of ties and number of sub-samples really used.

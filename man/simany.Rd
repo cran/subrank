@@ -8,7 +8,7 @@ Test statistic distribution under any hypothesis
 Simulates the test statistic, under independence
 }
 \usage{
-simany(sampsize,dimension,subsampsizes,sampnum,nbsafe=5, fun=NULL, ...)
+simany(sampsize,dimension,subsampsizes,sampnum,nbsafe=5,nthreads=2, fun=NULL, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,6 +27,8 @@ number of samples
   \item{nbsafe}{
 the ratio between the number of sub-samples and the cardinality of the discretized copula.
 }
+  \item{nthreads}{
+number of number of threads, assumed to be strictly positive. For "full throttle" computations, consider using parallel::detectCores()}
   \item{fun}{
 the function describing the dependence.
 }

@@ -1,4 +1,4 @@
-simany <- function(sampsize,dimension,subsampsizes,sampnum,nbsafe=5, fun=NULL, ...)
+simany <- function(sampsize,dimension,subsampsizes,sampnum,nbsafe=5,nthreads=2, fun=NULL, ...)
 {
   DistTypes=colnames(distance(1:5,5:1))
   lrs=array(dim=c(sampnum,length(subsampsizes),length(DistTypes)))
@@ -14,7 +14,7 @@ simany <- function(sampsize,dimension,subsampsizes,sampnum,nbsafe=5, fun=NULL, .
     }
     else {
       simdata=simdata=fun(sampsize*sampnum,dimension, ...)
-      vraicoptemp=corc0(simdata,sampsize*sampnum,dimension,subsampsizes[s],nboot,42)
+      vraicoptemp=corc0(simdata,sampsize*sampnum,dimension,subsampsizes[s],nboot,42,nthreads=nthreads)
       nbootreel=vraicoptemp[subsampsizes[s]^dimension+2]
       vraicop[[s]]=vraicoptemp[1:subsampsizes[s]^dimension]/nbootreel
     }
@@ -26,7 +26,7 @@ simany <- function(sampsize,dimension,subsampsizes,sampnum,nbsafe=5, fun=NULL, .
       if (!is.null(fun)) simdata=fun(sampsize,dimension, ...)
       else simdata=rnorm(sampsize*dimension)
       nboot=nbsafe*subsampsizes[s]^dimension
-      cop=corc0(simdata,sampsize,dimension,subsampsizes[s],nboot,42)
+      cop=corc0(simdata,sampsize,dimension,subsampsizes[s],nboot,42,nthreads=nthreads)
       tailcop=subsampsizes[s]^dimension
       nbootreel=cop[tailcop+2]
       cop=cop[1:tailcop]/nbootreel

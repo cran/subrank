@@ -1,5 +1,5 @@
 simnul <-
-function(sampsize,dimension,subsampsizes,sampnum,KL=TRUE,nbsafe=5)
+function(sampsize,dimension,subsampsizes,sampnum,KL=TRUE,nbsafe=5,nthreads=2)
 {
   lrs=matrix(ncol=length(subsampsizes),nrow=sampnum)
   scarcities=matrix(ncol=length(subsampsizes),nrow=sampnum)
@@ -9,7 +9,7 @@ function(sampsize,dimension,subsampsizes,sampnum,KL=TRUE,nbsafe=5)
     {
       simdata=rnorm(sampsize*dimension)
       nboot=nbsafe*subsampsizes[s]^dimension
-      cop=corc0(simdata,sampsize,dimension,subsampsizes[s],nboot,42)
+      cop=corc0(simdata,sampsize,dimension,subsampsizes[s],nboot,42,nthreads=nthreads)
 	  # the coercion to numeric avoids integer overflow, because the same coercion is done implicitally for subsampsizes[s]
       nbootreel=as.numeric(cop[subsampsizes[s]^dimension+2])
       cop=cop[1:subsampsizes[s]^dimension]
