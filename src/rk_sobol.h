@@ -105,8 +105,8 @@ extern const unsigned long rk_sobol_SLdirections[];
 extern const unsigned long rk_sobol_Ldirections[];
 
 /*
- * Peter Jäckel coefficients of the free direction integers as given
- * in "Monte Carlo Methods in Finance", by Peter Jäckel, section 8.3
+ * Peter Jaeckel coefficients of the free direction integers as given
+ * in "Monte Carlo Methods in Finance", by Peter Jaeckel, section 8.3
  * Defined up to dimension 32.
  */
 extern const unsigned long rk_sobol_Jdirections[];

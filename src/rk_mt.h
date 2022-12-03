@@ -94,6 +94,9 @@ extern char *rk_strerror[RK_ERR_MAX];
 extern "C" {
 #endif
 
+/* static functions */
+static unsigned long rk_hash(unsigned long key);
+
 /*
  * Initialize the RNG state using the given seed.
  */

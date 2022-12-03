@@ -80,9 +80,6 @@ char *rk_strerror[RK_ERR_MAX] =
   "random device unvavailable"
 };
 
-/* static functions */
-static unsigned long rk_hash(unsigned long key);
-
 void rk_knuth_fill(unsigned long seed, unsigned long *key, unsigned long len)
 {
   int pos;
@@ -115,7 +112,7 @@ unsigned long rk_hash(unsigned long key)
   return key;
 }
 
-unsigned long rk_seedfromsystem()
+unsigned long rk_seedfromsystem(void)
 {
 #ifndef _WIN32
   struct timeval tv;

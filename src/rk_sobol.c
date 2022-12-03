@@ -483,7 +483,7 @@ const unsigned long rk_sobol_Ldirections[] = {
 
 /*
  * coefficients of the free direction integers as given in
- * "Monte Carlo Methods in Finance", by Peter J„ckel, section 8.3
+ * "Monte Carlo Methods in Finance", by Peter Jaeckel, section 8.3
  */
 
 const unsigned long rk_sobol_Jdirections[] = {

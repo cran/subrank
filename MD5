@@ -1,4 +1,4 @@
-8492ef1fca1c2db3fadeb64d31ec2ea7 *DESCRIPTION
+1f2695dfe81633769095dd364b406427 *DESCRIPTION
 97fcdb757cac97cf81cdf9966b1ed01c *NAMESPACE
 00fe3ed5cc1a1bee644d120aa3a5805a *R/corc.R
 5c60d2535f9263720122aad45f75974d *R/corc0.R
@@ -10,7 +10,7 @@ a38581ec255e47891ac9d1be820d3547 *R/predictdep.R
 a61ecab44e0e278426f2180ef468e5db *R/predonfly.R
 29d7a868d920e4687022c2e44da9f0a5 *R/simany.R
 cb66479bda6a7a232e7e57191f981a73 *R/simnul.R
-3c2644b2212a9cdc0d7a8c0147a20e3f *build/partial.rdb
+e259d7f91782b54cca617df6c550d48d *build/partial.rdb
 a900da8441ea6efe5c47d4b48a4003e6 *man/corc.Rd
 c81b5c187664c0be03004605473ae6f8 *man/corc0.Rd
 a75fe21127a4499e7ee3799c923c1575 *man/desscop.Rd
@@ -31,9 +31,9 @@ fa91233ae87e8f1b476afd0289e13c7c *src/lienR.h
 c0ded4a691a42cd2e30777a785a8c898 *src/randomkit.h
 6c18948d77c2d32d1f3522816487cd3d *src/rk_isaac.c
 cbc79b4e5878a416525d9bd364fee1a7 *src/rk_isaac.h
-94e8c46ca162ee68ad1904a73782db94 *src/rk_mt.c
-a532e0f0583c22cd79c735da71aa021c *src/rk_mt.h
+e4df8a64591d978c5c081a31b74ab5fe *src/rk_mt.c
+ac818a307142193cef7f904f5268281b *src/rk_mt.h
 86910c4e493689be277285acc4b7628d *src/rk_primitive.c
 7dd61105d58f53531568f93c2fee1a96 *src/rk_primitive.h
-4db8203bcc840366ce741710b3840a5f *src/rk_sobol.c
-30b2895e5fb2476aa8ab03e5f58c4d80 *src/rk_sobol.h
+cbbe00ebc5ba9b3fab5d05f2c1e111a6 *src/rk_sobol.c
+b03d366d0c27b99bec7af44cd6d5e794 *src/rk_sobol.h
