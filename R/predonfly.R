@@ -10,7 +10,7 @@ predonfly <- function (completeobs,incompleteobs,varnames,subsampsize,nbpreds=1,
   incompleteobs2=subset(incompleteobs2,apply(is.na(incompleteobs2),1,sum)==0)
   nbinc=dim(incompleteobs2)[1]
   incompleteobs2=as.numeric(unlist(incompleteobs2))
-  completion = .Call("InterPredFly",
+  completion = .Call("InterPredFly",  PACKAGE = "subrank",
                         as.integer(nbcomp), as.integer(nbexps),
                         as.integer(nbinc),
                         as.integer(nbpreds), as.integer(subsampsize),

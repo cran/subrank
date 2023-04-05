@@ -29,7 +29,7 @@ predictdep <- function (knownvalues, dependence, smoothing = c("Uniform", "Beta"
                                1, rankknownvalues)
   }
   US = runif(NbKnownObs)
-  rankpredicted = .Call("InterTir", as.integer(NbKnownObs), 
+  rankpredicted = .Call("InterTir",  PACKAGE = "subrank", as.integer(NbKnownObs), 
                         as.integer(NbKnownDims), as.integer(NbUnknwonDims), as.integer(SubSampSize), 
                         as.double(US), as.double(dependence$cop), as.integer(rankknownvalues), 
                         as.integer(knowndims - 1), as.integer(UnknwonDims - 1), as.integer(nthreads)) + 
